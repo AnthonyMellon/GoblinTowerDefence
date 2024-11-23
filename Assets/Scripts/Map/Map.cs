@@ -76,8 +76,6 @@ public class Map
                 }
             }
         }
-        List<TileData> sortedTiles = tiles.OrderBy(t => t.WorldPosition).ToList();        
-
         if(!_config.ShouldGeneratePaths()) return this;
 
         //Chunks = _pathGenerator.GeneratePaths(Chunks, _playerPosition);
@@ -87,12 +85,18 @@ public class Map
         return this;
     }
 
-    public void GetChunkNearPosition(Vector2Int worldPosition)
+    public Chunk GetChunkNearPosition(Vector2Int worldPosition)
     {
-        //Convert world position to grid position
+        int chunkSize = _chunkGenerator.GetChunkSize();
 
+        //Convert world position to grid position
+        Vector2Int gridPosition = new Vector2Int(
+            Mathf.FloorToInt(worldPosition.x / chunkSize),
+            Mathf.FloorToInt(worldPosition.y / chunkSize)
+            );
 
         //Find chunk with grid position
+        return Chunks.Where(chunk => chunk.GridPosition == gridPosition).FirstOrDefault();
     }
 
     public class Factory : PlaceholderFactory<Map> { };

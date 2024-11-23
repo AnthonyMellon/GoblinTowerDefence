@@ -7,6 +7,8 @@ public class ChunkGenerator
 {
     private ChunkConfig _config;
 
+    public int GetChunkSize() => _config.GetChunkSize();
+
     [Inject]
     private void Initialize(ChunkConfig config)
     {

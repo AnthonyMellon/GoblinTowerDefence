@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79633131c0b664f4b9cf9e4d9537342c, type: 3}
+  m_Name: TileConfig_Dev
+  m_EditorClassIdentifier: 
+  _tileCoast: {fileID: 11400000, guid: 8634f7a3837f71f4e8b41b66c07d62a9, type: 2}
+  _tileHill: {fileID: 11400000, guid: ea5bc89ab75751b4cbea4d0a1f82cea9, type: 2}
+  _tileGrass: {fileID: 11400000, guid: 0de083a02774d874fa770699a764612f, type: 2}
+  _tilePath: {fileID: 11400000, guid: 4010305371e21fa438d411ecba3feae4, type: 2}
+  _tileFog: {fileID: 11400000, guid: 1154b4fe4a91fc440a447cd4796dc938, type: 2}
+  _tileInvalid: {fileID: 0}

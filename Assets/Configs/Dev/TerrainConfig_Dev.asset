@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9d5168659ab7f4f9c28365e6923a50, type: 3}
+  m_Name: TerrainConfig_Dev
+  m_EditorClassIdentifier: 
+  _safeZoneSize: 5
+  _maxCoastHeight: 0.5
+  _minHillHeight: 0.75
+  _octaveCount: 5
+  _frequency: 0.075
+  _amplitude: 0.6
+  _persistance: 0.5
+  _lacunarity: 2

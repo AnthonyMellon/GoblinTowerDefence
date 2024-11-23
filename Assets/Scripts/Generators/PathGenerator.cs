@@ -1,12 +1,5 @@
-using JetBrains.Annotations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Hierarchy;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Build;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Zenject;
 
@@ -15,10 +8,9 @@ public class PathGenerator
     private const float MOVE_STRAIGHT_COST = 1f;
     private const float MOVE_DIAGONAL_COST = 1.4f;
 
+    private Map _map;
     private TerrainConfig _terrainConfig;
-    private List<PathNode> _pathNodes = new List<PathNode>();
-
-    //private Dictionary<Vector2Int, PathNode> _myPathNodes = new Dictionary<Vector2Int, PathNode>();
+    private List<PathNodeChunk> _chunkedPathNodes = new List<PathNodeChunk>();
 
     [Inject]
     private void Initialize(TerrainConfig terrainConfig)
@@ -32,41 +24,47 @@ public class PathGenerator
     /// <param name="chunks">List of chunks in the map</param>
     /// <param name="targetPosition">Position where all paths will lead to</param>
     /// <returns></returns>
-    public List<Chunk> GeneratePaths(List<Chunk> chunks, Vector2Int targetPosition)
+    public List<Chunk> GeneratePaths(Map map, Vector2Int targetPosition)
     {
-        _pathNodes.Clear();
+        _map = map;
+        List<Chunk> chunks = map.Chunks;
 
-        //Get all path nodes
+        _chunkedPathNodes.Clear();
+
+        //Create and chunk all path nodes
         for (int c = 0; c < chunks.Count; c++)
         {
+            List<PathNode> pathNodes = new List<PathNode>();
+            //Get all tiles in chunk and make a pathnode for them
             for(int x = 0; x < chunks[c].Tiles.Count; x++)
-            {                
+            {
                 for(int y = 0; y < chunks[c].Tiles[x].Count; y++)
                 {
                     TileData tileData = chunks[c].Tiles[x][y];
 
-                    //t Cost is the tiles distance from the grass height
-                    float tCost = _terrainConfig.GetGrassHeight() - tileData.Height;
-
-                    //Create the node
+                    //Create the node only if this is a grass tile (no pathing over oceans or mountains)
                     if(tileData.TileType == MapConstants.TileType.Grass)
                     {
-                        PathNode node = new PathNode(tileData.WorldPosition, tileData, tCost, new Vector2Int(x,y));
-                        _pathNodes.Add(node);
+                        PathNode newNode = new PathNode(tileData);
+                        pathNodes.Add(newNode);
                     }
-                    
                 }
             }
+
+            //Create and add new chunk
+            PathNodeChunk newChunk = new PathNodeChunk(pathNodes, chunks[c].GridPosition);
+            _chunkedPathNodes.Add(newChunk);
         }
 
+        //Find paths for all structures
         for(int c = 0; c < chunks.Count; c++)
         {
             for(int s = 0; s < chunks[c].Structures.Count; s++)
-            {                
+            {
                 if (chunks[c].Structures[s].type == MapConstants.StructureType.Enemy)
                 {
                     List<PathNode> path = FindStructurePath(chunks[c].Structures[s].position, targetPosition);
-                    if(path != null)
+                    if (path != null)
                     {
                         chunks = AddPathToMap(chunks, path);
                     }
@@ -105,32 +103,38 @@ public class PathGenerator
 #nullable enable
         PathNode? startNode = null;
         PathNode? endNode = null;
-#nullable disable        
+#nullable disable
 
         //Get the start and end node
-        for (int i = 0; i < _pathNodes.Count; i++)
+        for(int c = 0; c < _chunkedPathNodes.Count; c++)
         {
-            //Found start node
-            if(_pathNodes[i].worldPosition == startPosition && startNode == null)
+            for (int n = 0; n < _chunkedPathNodes[c].Nodes.Count; n++)
             {
-                startNode = _pathNodes[i];   
-            }
+                PathNode node = _chunkedPathNodes[c].Nodes[n];
 
-            //Found end node
-            if (_pathNodes[i].worldPosition == endPosition && endNode == null)
-            {
-                endNode = _pathNodes[i];
-            }            
+                //Found start node
+                if (node.RefTile.WorldPosition == startPosition && startNode == null)
+                {
+                    startNode = node;
+                }
+
+                //Found end node
+                if (node.RefTile.WorldPosition == endPosition && endNode == null)
+                {
+                    endNode = node;
+                }
+            }
         }
+
 
         // Initiialise open (with start node) and closed list
         List<PathNode> openList = new List<PathNode> { startNode };
         List<PathNode> closedList = new List<PathNode>();
 
         //Init all nodes
-        for(int i = 0; i < _pathNodes.Count; i ++)
+        for(int i = 0; i < _chunkedPathNodes.Count; i ++)
         {
-            _pathNodes[i].Reset();
+            _chunkedPathNodes[i].InitAllNodes();
         }
 
         startNode.gCost = 0;
@@ -202,19 +206,19 @@ public class PathGenerator
         PathNode GetNeighbourInDirection(Vector2Int direction)
         {
             PathNode neighbour = null;
-
-            //neighbour = _pathNodes
             
-            Vector2Int neighbourPosition = new Vector2Int(currentNode.worldPosition.x + direction.x, currentNode.worldPosition.y + direction.y);
-            neighbour = _pathNodes.Where(node => node.worldPosition == neighbourPosition).FirstOrDefault();
+            Vector2Int neighbourPosition = new Vector2Int(currentNode.RefTile.WorldPosition.x + direction.x, currentNode.RefTile.WorldPosition.y + direction.y);
 
+            //Reduce search to a single chunk for speed
+            PathNodeChunk chunkToSearch = GetNodeChunkNearPosition(neighbourPosition);
 
+            if (chunkToSearch != null)
+            {
+                neighbour = chunkToSearch.Nodes.Where(node => node.RefTile.WorldPosition == neighbourPosition).FirstOrDefault();
+            }
 
             return neighbour;
         }
-
-
-
         return NeighbourNodes;
     }
 
@@ -235,8 +239,8 @@ public class PathGenerator
 
     private float CalculateDistanceCost(PathNode a, PathNode b)
     {
-        int xDistance = Mathf.Abs(a.worldPosition.x - b.worldPosition.x);
-        int yDistance = Mathf.Abs(a.worldPosition.y - b.worldPosition.y);
+        int xDistance = Mathf.Abs(a.RefTile.WorldPosition.x - b.RefTile.WorldPosition.x);
+        int yDistance = Mathf.Abs(a.RefTile.WorldPosition.y - b.RefTile.WorldPosition.y);
         int remaining = Mathf.Abs(xDistance - yDistance);
 
         return MOVE_DIAGONAL_COST * Mathf.Min(xDistance, yDistance) + MOVE_STRAIGHT_COST * remaining;
@@ -256,24 +260,44 @@ public class PathGenerator
 
         return lowestFCostNode;
     }
+
+    /// <summary>
+    /// Gets the chunk near given world position
+    /// </summary>
+    /// <param name="worldPosition">World position to find chunk near</param>
+    /// <returns></returns>
+    private PathNodeChunk GetNodeChunkNearPosition(Vector2Int worldPosition)
+    {
+        int chunkSize = _map.GetChunkSize();
+
+        //Convert world position to chunk position       
+        Vector2Int chunkPosition = new Vector2Int(
+            worldAxisToChunkAxis(worldPosition.x),
+            worldAxisToChunkAxis(worldPosition.y)
+            );
+
+        //Find chunk
+        PathNodeChunk chunk = _chunkedPathNodes.Where(chunk => chunk.ChunkPosition == chunkPosition).FirstOrDefault();
+        return chunk;
+
+        //Convert world axis to chunk axis (eg. x portion of world pos to x portion of chunk pos)
+        int worldAxisToChunkAxis(int worldAxis) => Mathf.FloorToInt((worldAxis + (chunkSize / 2f)) / chunkSize);
+    }
+
+    /// <summary>
+    /// Basically just a map tile with extra info for path finding
+    /// </summary>
     private class PathNode
-    {        
-        public Vector2Int worldPosition { get; private set; }
-        public Vector2Int index { get; private set; }
+    {
         public TileData RefTile;
         public PathNode parentNode;
         public float gCost; // The length of the path from the start node to this node
         public float hCost; // The straight-line distance from this node to the end node
-        public float fCost { get; private set; } // An estimate of the total distance if taking this route (F = G + H)
-        public float tCost { get; private set; } // Terrain cost, used to bias paths towards grass                            
+        public float fCost { get; private set; } // An estimate of the total distance if taking this route (F = G + H)                                   
 
-        public PathNode(Vector2Int worldPosition, TileData refTile, float tCost, Vector2Int index)
+        public PathNode(TileData refTile)
         {
-            this.worldPosition = worldPosition;
             RefTile = refTile;
-            this.tCost = tCost;
-            this.index = index;
-
             Reset();
         }
 
@@ -287,6 +311,29 @@ public class PathGenerator
         public void CalculateFCost()
         {
             fCost = gCost + hCost;
+        }
+    }
+
+    /// <summary>
+    /// Used to chunk path nodes for faster searching
+    /// </summary>
+    private class PathNodeChunk
+    {
+        public List<PathNode> Nodes { get; private set; }
+        public Vector2Int ChunkPosition { get; private set; }
+
+        public PathNodeChunk(List<PathNode> nodes, Vector2Int chunkPosition)
+        {
+            Nodes = nodes;
+            ChunkPosition = chunkPosition;
+        }
+
+        public void InitAllNodes()
+        {
+            for(int i = 0; i < Nodes.Count; i++)
+            {
+                Nodes[i].Reset();
+            }
         }
     }
 }

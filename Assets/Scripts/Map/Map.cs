@@ -16,6 +16,8 @@ public class Map
     TerrainGenerator _terrainGenerator;
     PathGenerator _pathGenerator;
 
+    public int GetChunkSize() => _chunkGenerator.GetChunkSize();
+
     [Inject]
     private void Initialize(
         MapConfig config,
@@ -78,7 +80,7 @@ public class Map
         }
         if(!_config.ShouldGeneratePaths()) return this;
 
-        //Chunks = _pathGenerator.GeneratePaths(Chunks, _playerPosition);
+        Chunks = _pathGenerator.GeneratePaths(this, _playerPosition);
 
         UnityEngine.Debug.Log($"Time to generate: {sw.ElapsedMilliseconds}");
 

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ChunkConfig_Dev
   m_EditorClassIdentifier: 
   _chunkSize: 16
-  _mapRadius: 2
+  _mapRadius: 4
   _initialRevealRadius: 4

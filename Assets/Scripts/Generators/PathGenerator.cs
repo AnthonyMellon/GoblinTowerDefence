@@ -24,10 +24,13 @@ public class PathGenerator
     /// <param name="chunks">List of chunks in the map</param>
     /// <param name="targetPosition">Position where all paths will lead to</param>
     /// <returns></returns>
-    public List<Chunk> GeneratePaths(Map map, Vector2Int targetPosition)
+    public List<Chunk> GeneratePaths(Map map)
     {
         _map = map;
         List<Chunk> chunks = map.Chunks;
+
+        //List of structure positions connected to player
+        List<Vector2Int> connectedPositions = _map.GetAllPlayerStructurePositions();
 
         _chunkedPathNodes.Clear();
 
@@ -56,23 +59,45 @@ public class PathGenerator
             _chunkedPathNodes.Add(newChunk);
         }
 
-        //Find paths for all structures
+        //Generate Paths for all structures
         for(int c = 0; c < chunks.Count; c++)
         {
             for(int s = 0; s < chunks[c].Structures.Count; s++)
             {
                 if (chunks[c].Structures[s].type == MapConstants.StructureType.Enemy)
                 {
-                    List<PathNode> path = FindStructurePath(chunks[c].Structures[s].position, targetPosition);
+                    Vector2Int startPosition = chunks[c].Structures[s].position;
+                    List<PathNode> path = FindStructurePath(startPosition, findBestPathfindPoint(startPosition));
                     if (path != null)
                     {
                         chunks = AddPathToMap(chunks, path);
+                        connectedPositions.Add(startPosition);
                     }
                 }
             }
         }
 
         return chunks;
+
+
+        //TODO: Implement a better way of finding closest structures (take into account terrain)
+        // Used to find the most appropriate point a structure should path find to
+        Vector2Int findBestPathfindPoint(Vector2Int startPosition)
+        {
+            Vector2Int bestPoint = connectedPositions[0];
+
+            //Find position of closest structure already pathed to player
+            for(int i = 0; i < connectedPositions.Count; i++)
+            {
+                float distance = Vector2Int.Distance(startPosition, connectedPositions[i]);
+                if (distance < Vector2Int.Distance(startPosition, bestPoint))
+                {
+                    bestPoint = connectedPositions[i];
+                }
+            }
+            
+            return bestPoint;
+        }
     }
 
     private List<Chunk> AddPathToMap(List<Chunk> chunks, List<PathNode> path)

@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using Zenject;
+using static MapConstants;
 
 public class Map
 {
@@ -80,7 +82,7 @@ public class Map
         }
         if(!_config.ShouldGeneratePaths()) return this;
 
-        Chunks = _pathGenerator.GeneratePaths(this, _playerPosition);
+        Chunks = _pathGenerator.GeneratePaths(this);
 
         UnityEngine.Debug.Log($"Time to generate: {sw.ElapsedMilliseconds}");
 
@@ -99,6 +101,30 @@ public class Map
 
         //Find chunk with grid position
         return Chunks.Where(chunk => chunk.GridPosition == gridPosition).FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Gets positions of all player structures (should only ever be one in normal gameplay)
+    /// </summary>
+    /// <returns>List of player structure positions</returns>
+    public List<Vector2Int> GetAllPlayerStructurePositions()
+    {
+        List<Vector2Int> positions = new List<Vector2Int>();
+
+        for (int c = 0; c < Chunks.Count; c++)
+        {
+            Chunk chunk = Chunks[c];
+            for (int s = 0; s < chunk.Structures.Count; s++)
+            {
+                (Vector2Int position, StructureType type) structure = chunk.Structures[s];
+                if(structure.type == StructureType.Player)
+                {
+                    positions.Add(structure.position);
+                }
+            }
+        }
+
+        return positions;
     }
 
     public class Factory : PlaceholderFactory<Map> { };

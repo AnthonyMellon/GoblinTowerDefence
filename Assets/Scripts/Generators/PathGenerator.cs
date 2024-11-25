@@ -29,7 +29,7 @@ public class PathGenerator
         List<Chunk> chunks = map.Chunks;
 
         //These are the points we are wanting to path find towards. Any point connected to the player should be added to this list
-        List<Vector2Int> connectedPositions = _map.GetAllPlayerStructurePositions();
+        List<StructureBase> connectedStructures = _map.GetAllPlayerStructures();
 
 
         //Create chunks of path nodes. Path nodes are chunked to improve search times when pathfinding
@@ -45,16 +45,17 @@ public class PathGenerator
         {
             for(int s = 0; s < chunks[c].Structures.Count; s++) // Each structure in chunk
             {
-                if (chunks[c].Structures[s].type == MapConstants.StructureType.Enemy)
+                StructureBase structure = chunks[c].Structures[s];
+                if (structure is EnemyStructure)
                 {
-                    Vector2Int startPosition = chunks[c].Structures[s].position;
+                    Vector2Int startPosition = structure.OwnerTile.WorldPosition;
                     List<PathNode> path = FindStructurePath(startPosition, findBestPathfindPoint(startPosition));
 
                     //Path for structure found, add it to the map and record it as a connected position
                     if (path != null)
                     {
                         chunks = AddPathToMap(chunks, path);
-                        connectedPositions.Add(startPosition);
+                        connectedStructures.Add(structure);
                     }
                 }
             }
@@ -67,15 +68,16 @@ public class PathGenerator
         // Used to find the most appropriate point a structure should path find to
         Vector2Int findBestPathfindPoint(Vector2Int startPosition)
         {
-            Vector2Int bestPoint = connectedPositions[0];
+            Vector2Int bestPoint = connectedStructures[0].OwnerTile.WorldPosition;
 
             //Find position of closest structure already pathed to player
-            for(int i = 0; i < connectedPositions.Count; i++)
+            for(int i = 0; i < connectedStructures.Count; i++)
             {
-                float distance = Vector2Int.Distance(startPosition, connectedPositions[i]);
+                Vector2Int structurePosition = connectedStructures[i].OwnerTile.WorldPosition;
+                float distance = Vector2Int.Distance(startPosition, structurePosition);
                 if (distance < Vector2Int.Distance(startPosition, bestPoint))
                 {
-                    bestPoint = connectedPositions[i];
+                    bestPoint = structurePosition;
                 }
             }
             
@@ -357,7 +359,7 @@ public class PathGenerator
                 }
             }
 
-            Nodes.Clear();
+            Nodes?.Clear();
             Nodes = newNodes;
         }
 

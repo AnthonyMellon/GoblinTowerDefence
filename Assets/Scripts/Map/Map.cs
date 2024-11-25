@@ -54,11 +54,11 @@ public class Map
         return this;
     }
 
-    public Map GenerateStructures()
+    public Map GenerateStructures(StructureContainer structureContainer)
     {
         if(!_config.ShouldGenerateStructures()) return this;
 
-        (List<Chunk> chunks, Vector2Int playerPosition) = _structureGenerator.GenerateStructures(Chunks);
+        (List<Chunk> chunks, Vector2Int playerPosition) = _structureGenerator.GenerateStructures(Chunks, structureContainer);
         Chunks = chunks;
         _playerPosition = playerPosition;
         return this;
@@ -107,24 +107,24 @@ public class Map
     /// Gets positions of all player structures (should only ever be one in normal gameplay)
     /// </summary>
     /// <returns>List of player structure positions</returns>
-    public List<Vector2Int> GetAllPlayerStructurePositions()
+    public List<StructureBase> GetAllPlayerStructures()
     {
-        List<Vector2Int> positions = new List<Vector2Int>();
+        List<StructureBase> structures = new List<StructureBase>();
 
         for (int c = 0; c < Chunks.Count; c++)
         {
             Chunk chunk = Chunks[c];
             for (int s = 0; s < chunk.Structures.Count; s++)
             {
-                (Vector2Int position, StructureType type) structure = chunk.Structures[s];
-                if(structure.type == StructureType.Player)
+                StructureBase structure = chunk.Structures[s];
+                if(structure is PlayerStructure)
                 {
-                    positions.Add(structure.position);
+                    structures.Add(structure);
                 }
             }
         }
 
-        return positions;
+        return structures;
     }
 
     public class Factory : PlaceholderFactory<Map> { };

@@ -8,16 +8,12 @@ public class MapDrawer
 {
     private Tilemap _tileMap;
     private TileConfig _tileConfig;
-    private PlayerStructure.Factory _playerStructureFactory;
-    private EnemyStructure.Factory _enemyStructureFactory;
 
     [Inject]
-    public void Initialize(Tilemap tileMap, TileConfig tileConfig, PlayerStructure.Factory playerStructureFactory, EnemyStructure.Factory enemyStructureFactory)
+    public void Initialize(Tilemap tileMap, TileConfig tileConfig)
     {
         _tileMap = tileMap;
         _tileConfig = tileConfig;
-        _playerStructureFactory = playerStructureFactory;
-        _enemyStructureFactory = enemyStructureFactory;
     }
 
     /// <summary>
@@ -39,15 +35,13 @@ public class MapDrawer
     /// </summary>
     /// <param name="map">The map to be drawn</param>
     /// <returns></returns>
-    public IEnumerator DrawMapRoutine(Map map, StructureContainer structureContainer)
+    public IEnumerator DrawMapRoutine(Map map)
     {
         _tileMap.ClearAllTiles();
-        structureContainer.DestroyAllStructures();
 
         for (int i = 0; i < map.Chunks.Count; i++)
         {
             DrawChunkTiles(map.Chunks[i]);
-            DrawChunkStructures(map.Chunks[i], structureContainer);
             yield return null;
         }
     }
@@ -69,32 +63,6 @@ public class MapDrawer
 
                 Vector3Int tileMapPos = new Vector3Int(tileData.WorldPosition.x, tileData.WorldPosition.y);
                 _tileMap.SetTile(tileMapPos, tile);
-            }
-        }
-    }
-
-    public void DrawChunkStructures(Chunk chunk, StructureContainer container)
-    {
-        for(int i = 0; i < chunk.Structures.Count; i++)
-        {
-            StructureBase createdStructure = null;
-
-            switch (chunk.Structures[i].type)
-            {
-                case StructureType.Player:
-                    createdStructure = _playerStructureFactory.Create(chunk.Structures[i].position);
-                    break;
-                case StructureType.Enemy:
-                    createdStructure = _enemyStructureFactory.Create(chunk.Structures[i].position);
-                    break;
-                default:
-                    Debug.LogWarning($"Attempting to draw invalid structure of type {chunk.Structures[i].type}");
-                    break;
-            }
-
-            if(createdStructure != null)
-            {
-                container.AddStructure(createdStructure);
             }
         }
     }

@@ -11,7 +11,8 @@ public class Chunk
     public Vector2Int GridPosition => WorldPosition / Size;
     public int Size { get; private set; }
     public bool Revealed;
-    public List<(Vector2Int position, StructureType type)> Structures { get; private set; } = new List<(Vector2Int position, StructureType type)>();
+    //public List<(Vector2Int position, StructureType type)> Structures { get; private set; } = new List<(Vector2Int position, StructureType type)>();
+    public List<StructureBase> Structures { get; private set; } = new List<StructureBase>();
 
     private List<TileData> _grassTiles;
 
@@ -24,9 +25,9 @@ public class Chunk
         Revealed = revealed;
     }
 
-    public void AddStrucuture(Vector2Int structurePosition, StructureType structureType)
+    public void AddStrucuture(StructureBase structure)
     {
-        Structures.Add((structurePosition, structureType));
+        Structures.Add(structure);
     }
 
     public TileData GetCenterTile()

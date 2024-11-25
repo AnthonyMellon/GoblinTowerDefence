@@ -8,8 +8,22 @@ using static MapConstants;
 
 public class StructureGenerator
 {
-    public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks)
+    private PlayerStructure.Factory _playerStructureFacotry;
+    private EnemyStructure.Factory _enemyStructureFacotry;
+    private StructureContainer _structureContainer;
+
+    [Inject]
+    private void Initialize(PlayerStructure.Factory playerStructureFactory, EnemyStructure.Factory enemyStructureFactory)
     {
+        _playerStructureFacotry = playerStructureFactory;
+        _enemyStructureFacotry = enemyStructureFactory;
+    }
+
+    public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks, StructureContainer structureContainer)
+    {
+        _structureContainer = structureContainer;
+        _structureContainer.DestroyAllStructures();
+
         List<Chunk> playerChunks = chunks.Where(chunk => chunk.Owner == ChunkOwner.Player).ToList();
         List<Chunk> enemyChunks = chunks.Where(chunk => chunk.Owner == ChunkOwner.Enemy).ToList();
         
@@ -22,12 +36,13 @@ public class StructureGenerator
         // Ensure there is a player chunk with at least one structure in it
         if (playerChunks.Count >= 1 && playerChunks[0].Structures.Count >= 1)
         {
-            // Get the first player structure
-            playerPos = playerChunks[0].Structures[0].position;
+            // Get the position of the first player structure (there should only ever be one in normal gameplay)
+            playerPos = playerChunks[0].Structures[0].OwnerTile.WorldPosition;
         }
         else
         {
-            // No player structure, default to middle of the map
+            // No player structure found (bad), default to middle of the map
+            Debug.LogWarning("Failed to find player structure... that's not a good thing");
             playerPos = Vector2Int.zero;
         }
 
@@ -55,7 +70,7 @@ public class StructureGenerator
             if (tileData != null && tileData.HasStructure == false)
             {
                 //Make a new structure
-                AddStructure(tileData, chunks[i], type);
+                GenerateStructure(tileData, chunks[i], type);
 
                 validChunks.Add(chunks[i]);
                 generatedStructures++;
@@ -84,9 +99,30 @@ public class StructureGenerator
         }
     }
 
-    private void AddStructure(TileData tileData, Chunk chunk, StructureType type)
-    {
-        tileData.SetHasStructure(true);        
-        chunk.AddStrucuture(tileData.WorldPosition, type);
+    private void GenerateStructure(TileData ownerTile, Chunk ownerChunk, StructureType type)
+    {        
+        StructureBase structure = null;
+
+        switch (type)
+        {
+            case StructureType.Player:
+                structure = _playerStructureFacotry.Create(ownerTile.WorldPosition);
+                break;
+            case StructureType.Enemy:
+                structure = _enemyStructureFacotry.Create(ownerTile.WorldPosition);
+                break;
+        }
+
+        if (structure != null)
+        {
+            ownerTile.SetHasStructure(true);
+            structure.SetOwnerTile(ownerTile);
+            ownerChunk.AddStrucuture(structure);
+
+            if (_structureContainer != null)
+            {
+                _structureContainer.AddStructure(structure);
+            }
+        }
     }
 }

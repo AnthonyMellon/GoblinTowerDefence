@@ -34,7 +34,7 @@ public class MapManager : MonoBehaviour
             .Create()
             .GenerateChunks()
             .GenerateTerrain()
-            .GenerateStructures()
+            .GenerateStructures(_structureContainer)
             .GeneratePaths();
 
         _map = map;
@@ -48,7 +48,7 @@ public class MapManager : MonoBehaviour
         if (_mapDrawer == null) _mapDrawer = _mapDrawerFactory.Create(_tileMap);
 
         if (_currentDrawRoutine != null) StopCoroutine(_currentDrawRoutine);
-        _currentDrawRoutine = StartCoroutine(_mapDrawer.DrawMapRoutine(_map, _structureContainer));
+        _currentDrawRoutine = StartCoroutine(_mapDrawer.DrawMapRoutine(_map));
 
     }
 }

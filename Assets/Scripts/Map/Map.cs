@@ -65,9 +65,7 @@ public class Map
     }
 
     public Map GeneratePaths()
-    {        
-        Stopwatch sw = Stopwatch.StartNew();
-
+    {
         List<TileData> tiles = new List<TileData>();
         for(int c = 0; c < Chunks.Count; c++)
         {
@@ -83,8 +81,6 @@ public class Map
         if(!_config.ShouldGeneratePaths()) return this;
 
         Chunks = _pathGenerator.GeneratePaths(this);
-
-        UnityEngine.Debug.Log($"Time to generate: {sw.ElapsedMilliseconds}");
 
         return this;
     }

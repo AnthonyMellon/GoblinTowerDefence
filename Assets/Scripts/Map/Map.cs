@@ -38,10 +38,13 @@ public class Map
         _seed = _config.GetDefaultSeed();
     }
 
+    public void Unload()
+    {
+        ClearAllCurrentChunks();
+    }
 
     public Map GenerateChunks()
     {
-        Chunks?.Clear();
         Chunks = _chunkGenerator.GenerateChunks();
         return this;
     }
@@ -54,7 +57,7 @@ public class Map
         return this;
     }
 
-    public Map GenerateStructures(StructureContainer structureContainer)
+    public Map GenerateStructures(Transform structureContainer)
     {
         if(!_config.ShouldGenerateStructures()) return this;
 
@@ -121,6 +124,18 @@ public class Map
         }
 
         return structures;
+    }
+
+    private void ClearAllCurrentChunks()
+    {
+        //No need to clear chunks that don't exist
+        if (Chunks == null) return;
+        
+        for(int i = 0; i < Chunks.Count; i++)
+        {
+            Chunks[i].Unload();
+        }
+        Chunks.Clear();
     }
 
     public class Factory : PlaceholderFactory<Map> { };

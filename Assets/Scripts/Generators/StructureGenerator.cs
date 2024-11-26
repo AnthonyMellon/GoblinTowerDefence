@@ -10,7 +10,7 @@ public class StructureGenerator
 {
     private PlayerStructure.Factory _playerStructureFacotry;
     private EnemyStructure.Factory _enemyStructureFacotry;
-    private StructureContainer _structureContainer;
+    private Transform _structureContainer;
 
     [Inject]
     private void Initialize(PlayerStructure.Factory playerStructureFactory, EnemyStructure.Factory enemyStructureFactory)
@@ -19,10 +19,9 @@ public class StructureGenerator
         _enemyStructureFacotry = enemyStructureFactory;
     }
 
-    public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks, StructureContainer structureContainer)
+    public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks, Transform structureContainer)
     {
         _structureContainer = structureContainer;
-        _structureContainer.DestroyAllStructures();
 
         List<Chunk> playerChunks = chunks.Where(chunk => chunk.Owner == ChunkOwner.Player).ToList();
         List<Chunk> enemyChunks = chunks.Where(chunk => chunk.Owner == ChunkOwner.Enemy).ToList();
@@ -119,10 +118,7 @@ public class StructureGenerator
             structure.SetOwnerTile(ownerTile);
             ownerChunk.AddStrucuture(structure);
 
-            if (_structureContainer != null)
-            {
-                _structureContainer.AddStructure(structure);
-            }
+            structure.transform.SetParent(_structureContainer, false);
         }
     }
 }

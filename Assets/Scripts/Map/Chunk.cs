@@ -58,4 +58,24 @@ public class Chunk
 
         _grassTiles = foundGrassTiles;
     }
+
+    /// <summary>
+    /// Unload all entities in the chunk, this should always be called before removing the chunk
+    /// </summary>
+    public void Unload()
+    {
+        DestroyAllStructures();
+    }
+
+    /// <summary>
+    /// Destroy all structures in the chunk
+    /// </summary>
+    private void DestroyAllStructures()
+    {
+        for (int i = 0; i < Structures.Count; i++)
+        {
+            GameObject.Destroy(Structures[i].gameObject);
+        }
+        Structures.Clear();
+    }
 }

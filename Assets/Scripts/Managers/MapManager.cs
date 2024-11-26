@@ -7,7 +7,7 @@ using Zenject;
 public class MapManager : MonoBehaviour
 {
     [SerializeField] private Tilemap _tileMap;
-    [SerializeField] private StructureContainer _structureContainer;
+    [SerializeField] private Transform _structureContainer;
 
     private Map.Factory _mapFactory;
     private Map _map;
@@ -30,6 +30,9 @@ public class MapManager : MonoBehaviour
     /// </summary>
     public void GenerateMap()
     {
+        //If there is an old map we should unload it to make sure all entities are cleared
+        _map?.Unload();
+
         Map map = _mapFactory
             .Create()
             .GenerateChunks()

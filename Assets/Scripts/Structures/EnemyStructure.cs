@@ -5,6 +5,7 @@ using Zenject;
 public class EnemyStructure : StructureBase
 {
     private List<Vector2Int> _path;
+    private StructureBase _targetStructure;
 
     [Inject]
     private void Initialize(Vector2Int position)
@@ -12,9 +13,10 @@ public class EnemyStructure : StructureBase
         transform.position = new Vector3(position.x, position.y);
     }
 
-    public void SetPath(List<Vector2Int> newPath)
+    public void SetPath(List<Vector2Int> newPath, StructureBase nextStructure)
     {
         _path = newPath;
+        _targetStructure = nextStructure;
     }
 
     public class Factory : PlaceholderFactory<Vector2Int, EnemyStructure> { };

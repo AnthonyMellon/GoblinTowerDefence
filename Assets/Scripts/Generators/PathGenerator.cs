@@ -48,14 +48,21 @@ public class PathGenerator
                 StructureBase structure = chunks[c].Structures[s];
                 if (structure is EnemyStructure)
                 {
+                    EnemyStructure enemyStructure = structure as EnemyStructure;
+
                     Vector2Int startPosition = structure.OwnerTile.WorldPosition;
-                    List<PathNode> path = FindStructurePath(startPosition, findBestPathfindPoint(startPosition));
+
+                    StructureBase targetStructure = findBestTargetStructure(startPosition);
+                    Vector2Int endPoistion = targetStructure.OwnerTile.WorldPosition;
+                    List<PathNode> path = FindPath(startPosition, endPoistion);
 
                     //Path for structure found, add it to the map and record it as a connected position
                     if (path != null)
                     {
-                        chunks = AddPathToMap(chunks, path);
+                        AddPathToMap(path);
                         connectedStructures.Add(structure);
+
+                        enemyStructure.SetPath(PathNodeListToVectorList(path), targetStructure);
                     }
                 }
             }
@@ -65,50 +72,38 @@ public class PathGenerator
 
 
         //TODO: Implement a better way of finding closest structures (take into account terrain)
-        // Used to find the most appropriate point a structure should path find to
-        Vector2Int findBestPathfindPoint(Vector2Int startPosition)
+        // Used to find the most appropriate structure to path find towards from startPosition
+        StructureBase findBestTargetStructure(Vector2Int startPosition)
         {
-            Vector2Int bestPoint = connectedStructures[0].OwnerTile.WorldPosition;
+            StructureBase bestStructure = connectedStructures[0];
+            //Vector2Int bestPoint = connectedStructures[0].OwnerTile.WorldPosition;
 
             //Find position of closest structure already pathed to player
             for(int i = 0; i < connectedStructures.Count; i++)
             {
-                Vector2Int structurePosition = connectedStructures[i].OwnerTile.WorldPosition;
-                float distance = Vector2Int.Distance(startPosition, structurePosition);
-                if (distance < Vector2Int.Distance(startPosition, bestPoint))
+                Vector2Int bestStructurePosition = bestStructure.OwnerTile.WorldPosition;
+                Vector2Int currentStructurePosition = connectedStructures[i].OwnerTile.WorldPosition;
+
+                float distance = Vector2Int.Distance(startPosition, currentStructurePosition);
+                if (distance < Vector2Int.Distance(startPosition, bestStructurePosition))
                 {
-                    bestPoint = structurePosition;
+                    bestStructure = connectedStructures[i];
                 }
             }
             
-            return bestPoint;
+            return bestStructure;
         }
     }
 
-    private List<Chunk> AddPathToMap(List<Chunk> chunks, List<PathNode> path)
+    private void AddPathToMap(List<PathNode> path)
     {
-
-        //Convert chunk list to tile list
-        List<TileData> flattenedTiles = new List<TileData>();
-        for(int c = 0; c < chunks.Count; c++)
-        {
-            for(int x = 0; x < chunks[c].Tiles.Count; x++)
-            {
-                for(int y = 0; y < chunks[c].Tiles[x].Count; y++)
-                {
-                    flattenedTiles.Add(chunks[c].Tiles[x][y]);
-                }
-            }
-        }
         for(int i = 0; i < path.Count; i++)
         {
             path[i].RefTile.SetType(MapConstants.TileType.Path);
-        }
-
-        return chunks;
+        }        
     }
 
-    private List<PathNode> FindStructurePath(Vector2Int startPosition, Vector2Int endPosition)
+    private List<PathNode> FindPath(Vector2Int startPosition, Vector2Int endPosition)
     {
 #nullable enable
         PathNode? startNode = null;
@@ -271,6 +266,18 @@ public class PathGenerator
         }
 
         return lowestFCostNode;
+    }
+
+    private List<Vector2Int> PathNodeListToVectorList(List<PathNode> nodes)
+    {
+        List<Vector2Int> vectorPath = new List<Vector2Int>();
+
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            vectorPath.Add(nodes[i].RefTile.WorldPosition);
+        }
+
+        return vectorPath;
     }
 
     /// <summary>

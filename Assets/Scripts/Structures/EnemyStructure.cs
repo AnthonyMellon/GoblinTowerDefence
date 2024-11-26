@@ -33,6 +33,9 @@ public class EnemyStructure : StructureBase
 
     public void SpawnEnemy()
     {
+        // Don't spawn an enemy if I don't have a path to give it
+        if(_path == null) return;
+
         Enemy enemy = _enemyFactory.Create();
         enemy.transform.SetParent(_enemyContainer, true);
         enemy.SetPath(_path, _targetStructure);

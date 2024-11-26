@@ -9,5 +9,10 @@ public class PlayerStructure : StructureBase
         transform.position = new Vector3(position.x, position.y);
     }
 
+    public override void OnReached(PathFollowerEntity entity)
+    {
+        Destroy(entity.gameObject);
+    }
+
     public class Factory : PlaceholderFactory<Vector2Int, PlayerStructure> { };
 }

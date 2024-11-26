@@ -18,6 +18,9 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private PlayerStructure _playerStructure;
     [SerializeField] private EnemyStructure _enemyStructure;
 
+    [Header("Entities")]
+    [SerializeField] private Enemy _enemy;
+
     public override void InstallBindings()
     {
         Container.Bind<MapManager>().FromComponentInNewPrefab(_mapManager).AsSingle();
@@ -39,6 +42,7 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Map, Map.Factory>();
         Container.BindFactory<Tilemap, MapDrawer, MapDrawer.Factory>();
         Container.BindFactory<Vector2Int, PlayerStructure, PlayerStructure.Factory>().FromComponentInNewPrefab(_playerStructure).AsSingle();
-        Container.BindFactory<Vector2Int, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
+        Container.BindFactory<Vector2Int, Transform, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
+        Container.BindFactory<Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy);
     }
 }

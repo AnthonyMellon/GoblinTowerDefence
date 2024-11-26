@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-public class StructureBase : MonoBehaviour
+public abstract class StructureBase : MonoBehaviour
 {
     public TileData OwnerTile { get; private set; }
 
@@ -9,4 +9,6 @@ public class StructureBase : MonoBehaviour
     {
         OwnerTile = ownerTile;
     }
+
+    public abstract void OnReached(PathFollowerEntity entity);
 }

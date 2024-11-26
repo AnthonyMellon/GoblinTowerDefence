@@ -171,6 +171,7 @@ MonoBehaviour:
   _tileConfig: {fileID: 11400000, guid: 8ed983a688ae6af4abc4022f0a42cfb5, type: 2}
   _playerStructure: {fileID: 2583052524194737788, guid: daad65a6ca748224eb3ebbbfc12fd346, type: 3}
   _enemyStructure: {fileID: 3584224220734084151, guid: c1edf4d30de7b8c41bc7e3cd84ef552d, type: 3}
+  _enemy: {fileID: 4150277437378599059, guid: c733be1e90f09c747a5780888badb395, type: 3}
 --- !u!1 &504636296
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,6 +26,7 @@ public class EnemyManager : MonoBehaviour
         // Not gonna destroy enemies that don't exist...
         if (_enemies == null) return;
 
+        Debug.Log($"<color=red>Killing</color> <color=cyan>{_enemies.Count}</color> <color=red>enemies</color>");
         // Stepping backwards through the list since enemies get removed from it when killed
         for(int i = _enemies.Count - 1; i >= 0; i--)
         {

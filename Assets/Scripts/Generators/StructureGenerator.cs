@@ -124,7 +124,8 @@ public class StructureGenerator
 
             if(structure is EnemyStructure)
             {
-                _spawnerManager.RegisterSpawner(structure as EnemyStructure);
+                EnemyStructure enemyStructure = structure as EnemyStructure;
+                _spawnerManager.RegisterSpawner(enemyStructure);
             }
         }
     }

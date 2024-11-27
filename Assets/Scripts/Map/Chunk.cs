@@ -74,7 +74,7 @@ public class Chunk
     {
         for (int i = 0; i < Structures.Count; i++)
         {
-            GameObject.Destroy(Structures[i].gameObject);
+            Structures[i].Destroy();
         }
         Structures.Clear();
     }

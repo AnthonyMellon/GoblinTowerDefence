@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -8,6 +9,8 @@ public class EnemyStructure : StructureBase
     private StructureBase _targetStructure;
     private Enemy.Factory _enemyFactory;
     private EnemyManager _enemyManager;
+
+    public Action<EnemyStructure> OnDestroyed;
 
     [Inject]
     private void Initialize(Vector2Int position, Enemy.Factory enemyFactory, EnemyManager enemyManager)
@@ -33,10 +36,16 @@ public class EnemyStructure : StructureBase
         // Don't spawn an enemy if I don't have a path to give it
         if(_path == null) return;
 
-        float enemySpeed = Random.Range(2, 5);
+        float enemySpeed = UnityEngine.Random.Range(2, 5);
         Enemy enemy = _enemyFactory.Create(enemySpeed);
         enemy.SetPath(_path, _targetStructure);
         _enemyManager.AddEnemy(enemy);
+    }
+
+    public override void Destroy()
+    {
+        base.Destroy();
+        OnDestroyed?.Invoke(this);
     }
 
     public class Factory : PlaceholderFactory<Vector2Int, EnemyStructure> { };

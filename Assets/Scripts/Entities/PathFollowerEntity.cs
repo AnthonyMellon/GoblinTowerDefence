@@ -10,6 +10,7 @@ public class PathFollowerEntity : MonoBehaviour
     private float _progressTowardsTargetPoint;
     private Vector2Int _targetPoint;
     private Vector2Int _currentPoint;
+    private int _speed = 2;
 
     protected Action<StructureBase> OnTargetStructureChange;
 
@@ -23,7 +24,7 @@ public class PathFollowerEntity : MonoBehaviour
         // No point trying to progress on a path that doesn't exist 
         if (_currentPath == null) return;
 
-        _progressTowardsTargetPoint += Time.deltaTime * 2;
+        _progressTowardsTargetPoint += Time.deltaTime * _speed;
         if (_progressTowardsTargetPoint >= 1)
         {
             GetNextPathPoint();

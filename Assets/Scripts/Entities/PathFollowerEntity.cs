@@ -10,19 +10,6 @@ public class PathFollowerEntity : MonoBehaviour
     private Vector2Int _targetPoint;
     private Vector2Int _currentPoint;
 
-    private void Start()
-    {
-
-    }
-
-    private IEnumerator FollowPathRoutine()
-    {
-        while (true)
-        {
-            MoveAlongPath();
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
 
     private void Update()
     {

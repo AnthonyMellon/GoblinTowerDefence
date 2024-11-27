@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class PathFollowerEntity : MonoBehaviour
     private Vector2Int _targetPoint;
     private Vector2Int _currentPoint;
 
+    protected Action<StructureBase> OnTargetStructureChange;
 
     private void Update()
     {
@@ -52,6 +54,8 @@ public class PathFollowerEntity : MonoBehaviour
 
         _currentPathPointIndex = -1;
         GetNextPathPoint();
+
+        OnTargetStructureChange?.Invoke(targetStructure);
     }
 
     protected class Path

@@ -10,7 +10,7 @@ public class PathFollowerEntity : MonoBehaviour
     private float _progressTowardsTargetPoint;
     private Vector2Int _targetPoint;
     private Vector2Int _currentPoint;
-    private int _speed = 2;
+    protected float _speed = 2;
 
     protected Action<StructureBase> OnTargetStructureChange; 
 

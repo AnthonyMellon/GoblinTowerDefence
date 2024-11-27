@@ -33,7 +33,8 @@ public class EnemyStructure : StructureBase
         // Don't spawn an enemy if I don't have a path to give it
         if(_path == null) return;
 
-        Enemy enemy = _enemyFactory.Create();
+        float enemySpeed = Random.Range(2, 5);
+        Enemy enemy = _enemyFactory.Create(enemySpeed);
         enemy.SetPath(_path, _targetStructure);
         _enemyManager.AddEnemy(enemy);
     }

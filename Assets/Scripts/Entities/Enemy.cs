@@ -12,6 +12,12 @@ public class Enemy : PathFollowerEntity
 
     public Action<Enemy> OnDeath;
 
+    [Inject]
+    private void Initialize(float speed)
+    {
+        _speed = speed;
+    }
+
     private void OnEnable()
     {
         OnTargetStructureChange += TargetStructureChanged;
@@ -41,5 +47,5 @@ public class Enemy : PathFollowerEntity
         OnDeath?.Invoke(this);
     }
 
-    public class Factory : PlaceholderFactory<Enemy> { };
+    public class Factory : PlaceholderFactory<float, Enemy> { };
 }

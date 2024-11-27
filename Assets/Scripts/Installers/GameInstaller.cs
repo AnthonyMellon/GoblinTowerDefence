@@ -49,6 +49,6 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Tilemap, MapDrawer, MapDrawer.Factory>();
         Container.BindFactory<Vector2Int, PlayerStructure, PlayerStructure.Factory>().FromComponentInNewPrefab(_playerStructure).AsSingle();
         Container.BindFactory<Vector2Int, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
-        Container.BindFactory<Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy);
+        Container.BindFactory <float, Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy);
     }
 }

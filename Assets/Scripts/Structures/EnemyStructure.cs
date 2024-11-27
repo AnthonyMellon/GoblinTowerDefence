@@ -21,9 +21,6 @@ public class EnemyStructure : StructureBase
     {
         _path = newPath;
         _targetStructure = nextStructure;
-
-        //Temp
-        SpawnEnemy();
     }
 
     public override void OnReached(PathFollowerEntity entity)

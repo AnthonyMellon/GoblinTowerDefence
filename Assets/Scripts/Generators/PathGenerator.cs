@@ -358,7 +358,7 @@ public class PathGenerator
                     TileData tileData = chunk.Tiles[x][y];
 
                     //Create the node only if this is a grass tile (no pathing over oceans or mountains)
-                    if (tileData.TileType == MapConstants.TileType.Grass)
+                    if (tileData.TileType == MapConstants.TileType.Grass || tileData.TileType == MapConstants.TileType.Path)
                     {
                         PathNode newNode = new PathNode(tileData);
                         newNodes.Add(newNode);

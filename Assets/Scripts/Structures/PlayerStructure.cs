@@ -11,7 +11,7 @@ public class PlayerStructure : StructureBase
 
     public override void OnReached(PathFollowerEntity entity)
     {
-        Destroy(entity.gameObject);
+        entity.Kill();
     }
 
     public class Factory : PlaceholderFactory<Vector2Int, PlayerStructure> { };

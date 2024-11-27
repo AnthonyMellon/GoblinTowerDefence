@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using Zenject;
 using static MapConstants;
 
@@ -12,12 +10,14 @@ public class StructureGenerator
     private EnemyStructure.Factory _enemyStructureFacotry;
     private Transform _structureContainer;
     private Transform _enemyContainer;
+    private SpawnerManager _spawnerManager;
 
     [Inject]
-    private void Initialize(PlayerStructure.Factory playerStructureFactory, EnemyStructure.Factory enemyStructureFactory)
+    private void Initialize(PlayerStructure.Factory playerStructureFactory, EnemyStructure.Factory enemyStructureFactory, SpawnerManager spawnerManager)
     {
         _playerStructureFacotry = playerStructureFactory;
         _enemyStructureFacotry = enemyStructureFactory;
+        _spawnerManager = spawnerManager;
     }
 
     public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks, Transform structureContainer, Transform enemyContainer)
@@ -110,7 +110,7 @@ public class StructureGenerator
                 structure = _playerStructureFacotry.Create(ownerTile.WorldPosition);
                 break;
             case StructureType.Enemy:
-                structure = _enemyStructureFacotry.Create(ownerTile.WorldPosition, _enemyContainer);
+                structure = _enemyStructureFacotry.Create(ownerTile.WorldPosition);                
                 break;
         }
 
@@ -121,6 +121,11 @@ public class StructureGenerator
             ownerChunk.AddStrucuture(structure);
 
             structure.transform.SetParent(_structureContainer, false);
+
+            if(structure is EnemyStructure)
+            {
+                _spawnerManager.RegisterSpawner(structure as EnemyStructure);
+            }
         }
     }
 }

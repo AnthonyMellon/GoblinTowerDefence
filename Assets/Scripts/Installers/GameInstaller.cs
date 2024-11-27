@@ -4,7 +4,10 @@ using Zenject;
 
 public class GameInstaller : MonoInstaller
 {
+    [Header("Managers")]
     [SerializeField] private MapManager _mapManager;
+    [SerializeField] private EnemyManager _enemyManager;
+    [SerializeField] private SpawnerManager _spawnerManager;
 
     [Header("Configs")]
     [SerializeField] private MapConfig _mapConfig;
@@ -23,7 +26,10 @@ public class GameInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        //Managers
         Container.Bind<MapManager>().FromComponentInNewPrefab(_mapManager).AsSingle();
+        Container.Bind<EnemyManager>().FromComponentInNewPrefab(_enemyManager).AsSingle();
+        Container.Bind<SpawnerManager>().FromComponentInNewPrefab(_spawnerManager).AsSingle();
 
         //Configs
         Container.Bind<MapConfig>().FromScriptableObject(_mapConfig).AsSingle();
@@ -42,7 +48,7 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Map, Map.Factory>();
         Container.BindFactory<Tilemap, MapDrawer, MapDrawer.Factory>();
         Container.BindFactory<Vector2Int, PlayerStructure, PlayerStructure.Factory>().FromComponentInNewPrefab(_playerStructure).AsSingle();
-        Container.BindFactory<Vector2Int, Transform, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
+        Container.BindFactory<Vector2Int, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
         Container.BindFactory<Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy);
     }
 }

@@ -7,14 +7,14 @@ public class EnemyStructure : StructureBase
     private List<Vector2Int> _path;
     private StructureBase _targetStructure;
     private Enemy.Factory _enemyFactory;
-    private Transform _enemyContainer;
+    private EnemyManager _enemyManager;
 
     [Inject]
-    private void Initialize(Vector2Int position, Transform enemyContainer, Enemy.Factory enemyFactory)
+    private void Initialize(Vector2Int position, Enemy.Factory enemyFactory, EnemyManager enemyManager)
     {
         _enemyFactory = enemyFactory;
         transform.position = new Vector3(position.x, position.y);
-        _enemyContainer = enemyContainer;        
+        _enemyManager = enemyManager;
     }
 
     public void SetPath(List<Vector2Int> newPath, StructureBase nextStructure)
@@ -37,9 +37,9 @@ public class EnemyStructure : StructureBase
         if(_path == null) return;
 
         Enemy enemy = _enemyFactory.Create();
-        enemy.transform.SetParent(_enemyContainer, true);
         enemy.SetPath(_path, _targetStructure);
+        _enemyManager.AddEnemy(enemy);
     }
 
-    public class Factory : PlaceholderFactory<Vector2Int, Transform, EnemyStructure> { };
+    public class Factory : PlaceholderFactory<Vector2Int, EnemyStructure> { };
 }

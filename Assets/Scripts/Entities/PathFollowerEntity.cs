@@ -12,7 +12,7 @@ public class PathFollowerEntity : MonoBehaviour
     private Vector2Int _currentPoint;
     private int _speed = 2;
 
-    protected Action<StructureBase> OnTargetStructureChange;
+    protected Action<StructureBase> OnTargetStructureChange; 
 
     private void Update()
     {
@@ -57,6 +57,12 @@ public class PathFollowerEntity : MonoBehaviour
         GetNextPathPoint();
 
         OnTargetStructureChange?.Invoke(targetStructure);
+    }
+
+    public virtual void Kill()
+    {
+        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
     protected class Path

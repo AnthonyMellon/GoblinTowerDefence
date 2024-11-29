@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 using Zenject;
 using static MapConstants;
 
@@ -17,8 +18,8 @@ public class MapManager : MonoBehaviour
     private MapDrawer.Factory _mapDrawerFactory;
     private MapDrawer _mapDrawer;
     private Coroutine _currentDrawRoutine;
+    private Dictionary<Direction, int> _mapEdges;
 
-    public Action OnMapGenerated;
 
     [Inject]
     private void Initialize(Map.Factory mapFactory, MapDrawer.Factory mapDrawerFactory)
@@ -43,16 +44,7 @@ public class MapManager : MonoBehaviour
             .GeneratePaths();
 
         _map = map;
-        OnMapGenerated?.Invoke();
-    }
-
-    public Dictionary<Direction, int> GetMapEdges()
-    {
-        Dictionary<Direction, int> edges = null;
-        if (_map == null) return edges;
-
-        edges = _map.GetEdges();
-        return edges;
+        UpdateMapEdges();
     }
     
     /// <summary>
@@ -65,5 +57,24 @@ public class MapManager : MonoBehaviour
         if (_currentDrawRoutine != null) StopCoroutine(_currentDrawRoutine);
         _currentDrawRoutine = StartCoroutine(_mapDrawer.DrawMapRoutine(_map));
 
+    }
+
+    public Vector3 BindPositionToMap(Vector3 position)
+    {
+        if (_mapEdges == null) return position;
+
+        if (_mapEdges.ContainsKey(Direction.North) && position.y > _mapEdges[Direction.North]) position.y = _mapEdges[Direction.North];
+        if (_mapEdges.ContainsKey(Direction.South) && position.y < _mapEdges[Direction.South]) position.y = _mapEdges[Direction.South];
+        if (_mapEdges.ContainsKey(Direction.West) && position.x < _mapEdges[Direction.West]) position.x = _mapEdges[Direction.West];
+        if (_mapEdges.ContainsKey(Direction.East) && position.x > _mapEdges[Direction.East]) position.x = _mapEdges[Direction.East];
+
+        return position;
+    }
+
+    public void UpdateMapEdges()
+    {
+        Dictionary<Direction, int> edges;
+        edges = _map?.GetEdges();
+        _mapEdges = edges;
     }
 }

@@ -15,7 +15,6 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float _zoomSpeed;
     [SerializeField] private float _panSpeed;
     private float _currentZoomLevel = 0;
-    private Dictionary<Direction, int> _mapEdges;
 
     [Inject]
     private  void Initialize(InputProvider inputProvider, MapManager mapManager)
@@ -32,16 +31,12 @@ public class PlayerCamera : MonoBehaviour
 
         _inputProvider.OnCameraZoom += ZoomCamera;
         _inputProvider.OnCameraPan += PanCamera;
-
-        _mapManager.OnMapGenerated += UpdateMapEdges;
     }
 
     private void OnDisable()
     {
         _inputProvider.OnCameraZoom -= ZoomCamera;
         _inputProvider.OnCameraPan -= PanCamera;
-
-        _mapManager.OnMapGenerated -= UpdateMapEdges;
     }
 
     private void ZoomCamera(float direction)
@@ -69,24 +64,7 @@ public class PlayerCamera : MonoBehaviour
             currentPosition.z
             );
 
-        newPosition = BindPositionToMap(newPosition);
+        newPosition = _mapManager.BindPositionToMap(newPosition);
         transform.position = newPosition;
-    }
-
-    private Vector3 BindPositionToMap(Vector3 position)
-    {
-        if(_mapEdges == null) return position;
-
-        if (_mapEdges.ContainsKey(Direction.North) && position.y > _mapEdges[Direction.North]) position.y = _mapEdges[Direction.North];
-        if (_mapEdges.ContainsKey(Direction.South) && position.y < _mapEdges[Direction.South]) position.y = _mapEdges[Direction.South];
-        if (_mapEdges.ContainsKey(Direction.West) && position.x < _mapEdges[Direction.West]) position.x = _mapEdges[Direction.West];
-        if (_mapEdges.ContainsKey(Direction.East) && position.x > _mapEdges[Direction.East]) position.x = _mapEdges[Direction.East];
-
-        return position;
-    }
-
-    private void UpdateMapEdges()
-    {
-        _mapEdges = _mapManager.GetMapEdges();
     }
 }

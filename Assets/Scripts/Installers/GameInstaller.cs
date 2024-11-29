@@ -26,6 +26,8 @@ public class GameInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        Container.Bind<InputProvider>().FromNew().AsSingle();
+
         //Managers
         Container.Bind<MapManager>().FromComponentInNewPrefab(_mapManager).AsSingle();
         Container.Bind<EnemyManager>().FromComponentInNewPrefab(_enemyManager).AsSingle();

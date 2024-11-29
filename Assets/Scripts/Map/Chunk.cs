@@ -1,6 +1,7 @@
 using ModestTree;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Switch;
 using static MapConstants;
 
 public class Chunk
@@ -77,5 +78,22 @@ public class Chunk
             Structures[i].Destroy();
         }
         Structures.Clear();
+    }
+
+    public int GetEdge(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.North:
+                return WorldPosition.y + (Size / 2);
+            case Direction.South:
+                return WorldPosition.y - (Size / 2);
+            case Direction.West:
+                return WorldPosition.x - (Size / 2);
+            case Direction.East:
+                return WorldPosition.x + (Size / 2);
+            default:
+                return 0;
+        }
     }
 }

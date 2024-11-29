@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Zenject;
+using static MapConstants;
 
 public class MapManager : MonoBehaviour
 {
@@ -16,8 +18,7 @@ public class MapManager : MonoBehaviour
     private MapDrawer _mapDrawer;
     private Coroutine _currentDrawRoutine;
 
-    public Action OnMapGenerateStart;
-    public Action OnMapGenerateComplete;
+    public Action OnMapGenerated;
 
     [Inject]
     private void Initialize(Map.Factory mapFactory, MapDrawer.Factory mapDrawerFactory)
@@ -42,6 +43,16 @@ public class MapManager : MonoBehaviour
             .GeneratePaths();
 
         _map = map;
+        OnMapGenerated?.Invoke();
+    }
+
+    public Dictionary<Direction, int> GetMapEdges()
+    {
+        Dictionary<Direction, int> edges = null;
+        if (_map == null) return edges;
+
+        edges = _map.GetEdges();
+        return edges;
     }
     
     /// <summary>

@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     private MapManager _mapManager;
     private EnemyManager _enemyManager;
-    public SpawnerManager _spawnerManager;
+    private SpawnerManager _spawnerManager;
 
     [Inject]
     private void Initialize(MapManager mapManager, EnemyManager enemyManager, SpawnerManager spawnerManager)

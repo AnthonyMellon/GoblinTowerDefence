@@ -24,4 +24,13 @@ public static class MapConstants
         Player,
         Enemy
     }
+
+    public enum Direction
+    {
+        North,
+        East,
+        South,
+        West
+    }
+
 }

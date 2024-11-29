@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using Zenject;
@@ -136,6 +134,22 @@ public class Map
             Chunks[i].Unload();
         }
         Chunks.Clear();
+    }
+
+    public Dictionary<Direction, int> GetEdges()
+    {
+        Dictionary<Direction, int> edges = new Dictionary<Direction, int>();
+        
+        for (int i = 0; i < Chunks.Count; i++)
+        {
+            Chunk chunk = Chunks[i];
+
+            if(!edges.ContainsKey(Direction.North) || chunk.WorldPosition.y > edges[Direction.North]) edges[Direction.North] = chunk.GetEdge(Direction.North);
+            if(!edges.ContainsKey(Direction.South) || chunk.WorldPosition.y < edges[Direction.South]) edges[Direction.South] = chunk.GetEdge(Direction.South);
+            if(!edges.ContainsKey(Direction.West) || chunk.WorldPosition.x < edges[Direction.West]) edges[Direction.West] = chunk.GetEdge(Direction.West);
+            if(!edges.ContainsKey(Direction.East) || chunk.WorldPosition.x > edges[Direction.East]) edges[Direction.East] = chunk.GetEdge(Direction.East);
+        }
+        return edges;
     }
 
     public class Factory : PlaceholderFactory<Map> { };

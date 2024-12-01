@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86c52c9fb3e73a94b81d1c974e06980b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerCamera: {fileID: 519420031}
   _mapManager: {fileID: 6006825056941801691, guid: 58998e9ae76ef4f409230beeb14f30f2, type: 3}
   _enemyManager: {fileID: 6434225845722082121, guid: db52e1b1850271e42adc1499a35b2d4d, type: 3}
   _spawnerManager: {fileID: -1170770340225598535, guid: 22aeb6400eaba344182fd89737ba1382, type: 3}

@@ -17,7 +17,7 @@ public class PlayerCamera : MonoBehaviour
     private float _currentZoomLevel = 0;
 
     [Inject]
-    private  void Initialize(InputProvider inputProvider, MapManager mapManager)
+    private void Initialize(InputProvider inputProvider, MapManager mapManager)
     {
         _inputProvider = inputProvider;
         _mapManager = mapManager;

@@ -4,6 +4,8 @@ using Zenject;
 
 public class GameInstaller : MonoInstaller
 {
+    [SerializeField] private Camera _playerCamera;
+
     [Header("Managers")]
     [SerializeField] private MapManager _mapManager;
     [SerializeField] private EnemyManager _enemyManager;
@@ -27,6 +29,7 @@ public class GameInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.Bind<InputProvider>().FromNew().AsSingle();
+        Container.Bind<Camera>().FromComponentInHierarchy(_playerCamera).AsSingle();
 
         //Managers
         Container.Bind<MapManager>().FromComponentInNewPrefab(_mapManager).AsSingle();

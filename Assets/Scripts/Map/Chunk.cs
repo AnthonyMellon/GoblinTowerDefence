@@ -1,7 +1,7 @@
 using ModestTree;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem.Switch;
 using static MapConstants;
 
 public class Chunk
@@ -58,6 +58,18 @@ public class Chunk
         }
 
         _grassTiles = foundGrassTiles;
+    }
+
+    /// <summary>
+    /// Gets a tile at given world position
+    /// </summary>
+    /// <param name="worldPosition">Wolrd position to find tile at</param>
+    /// <returns>Tiledata if found, otherwise null</returns>
+    public TileData GetTileAtPosition(Vector2Int worldPosition)
+    {
+        List<TileData> tiles = Tiles.SelectMany(td => td).ToList();
+        TileData tile = tiles.Where(t => t.WorldPosition == worldPosition).FirstOrDefault();
+        return tile;
     }
 
     /// <summary>

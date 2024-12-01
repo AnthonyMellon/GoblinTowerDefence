@@ -9,6 +9,7 @@ public static class MapConstants
         Path,
         Coast,
         Hill,
+        Entity,
         Invalid
     }
 

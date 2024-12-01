@@ -167,6 +167,7 @@ MonoBehaviour:
   _mapManager: {fileID: 6006825056941801691, guid: 58998e9ae76ef4f409230beeb14f30f2, type: 3}
   _enemyManager: {fileID: 6434225845722082121, guid: db52e1b1850271e42adc1499a35b2d4d, type: 3}
   _spawnerManager: {fileID: -1170770340225598535, guid: 22aeb6400eaba344182fd89737ba1382, type: 3}
+  _towerManager: {fileID: 3771448427388024096, guid: 28f995a988fa52f4a87b92ba5b730e52, type: 3}
   _mapConfig: {fileID: 11400000, guid: 0f0d421ffa509884e92243d40c49875c, type: 2}
   _chunkConfig: {fileID: 11400000, guid: 8868290ba8e77fc4988da22f370445ed, type: 2}
   _terrainConfig: {fileID: 11400000, guid: d42cdbf3efa7d9245a96e356984fe851, type: 2}
@@ -175,6 +176,7 @@ MonoBehaviour:
   _playerStructure: {fileID: 2583052524194737788, guid: daad65a6ca748224eb3ebbbfc12fd346, type: 3}
   _enemyStructure: {fileID: 3584224220734084151, guid: c1edf4d30de7b8c41bc7e3cd84ef552d, type: 3}
   _enemy: {fileID: 4150277437378599059, guid: c733be1e90f09c747a5780888badb395, type: 3}
+  _tower: {fileID: 2566907403212335158, guid: bc66fdb4969f9f44998edcbeeb3e447c, type: 3}
 --- !u!1 &504636296
 GameObject:
   m_ObjectHideFlags: 0

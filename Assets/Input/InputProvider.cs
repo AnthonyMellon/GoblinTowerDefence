@@ -18,7 +18,7 @@ public class InputProvider
         
         _inputActions.Player.CameraZoom.performed += CameraZoom;        
         _inputActions.Player.CameraPan.performed += CameraPan;
-        _inputActions.Player.Interact.performed += Interact;
+        _inputActions.Player.Interact.started += Interact;
     }
 
     public Action<float> OnCameraZoom;
@@ -37,7 +37,7 @@ public class InputProvider
         OnCameraPan?.Invoke(value);
     }
 
-    public Action<Vector2> OnInteract;
+    public Action<Vector2Int> OnInteract;
     private void Interact(InputAction.CallbackContext context)
     {
         Vector2 value = context.ReadValue<Vector2>();

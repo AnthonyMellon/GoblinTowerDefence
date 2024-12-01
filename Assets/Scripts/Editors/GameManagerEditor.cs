@@ -25,6 +25,10 @@ public class GameManagerEditor : Editor
             gameManager.DestroyAllEnemies();
         }
 
+        if(GUILayout.Button("Destroy All Towers"))
+        {
+            gameManager.DestroyAllTowers();
+        }
        
     }
 }

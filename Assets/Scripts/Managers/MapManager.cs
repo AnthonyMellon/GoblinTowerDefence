@@ -14,7 +14,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] private Transform _enemyContainer;
 
     private Map.Factory _mapFactory;
-    private Map _map;
+    public Map _map { get; private set; }
     private MapDrawer.Factory _mapDrawerFactory;
     private MapDrawer _mapDrawer;
     private Coroutine _currentDrawRoutine;

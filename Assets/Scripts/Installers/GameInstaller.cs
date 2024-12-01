@@ -10,6 +10,7 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private MapManager _mapManager;
     [SerializeField] private EnemyManager _enemyManager;
     [SerializeField] private SpawnerManager _spawnerManager;
+    [SerializeField] private TowerManager _towerManager;
 
     [Header("Configs")]
     [SerializeField] private MapConfig _mapConfig;
@@ -25,6 +26,7 @@ public class GameInstaller : MonoInstaller
 
     [Header("Entities")]
     [SerializeField] private Enemy _enemy;
+    [SerializeField] private Tower _tower;
 
     public override void InstallBindings()
     {
@@ -35,6 +37,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<MapManager>().FromComponentInNewPrefab(_mapManager).AsSingle();
         Container.Bind<EnemyManager>().FromComponentInNewPrefab(_enemyManager).AsSingle();
         Container.Bind<SpawnerManager>().FromComponentInNewPrefab(_spawnerManager).AsSingle();
+        Container.Bind<TowerManager>().FromComponentInNewPrefab(_towerManager).AsSingle().NonLazy();
 
         //Configs
         Container.Bind<MapConfig>().FromScriptableObject(_mapConfig).AsSingle();
@@ -54,6 +57,7 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Tilemap, MapDrawer, MapDrawer.Factory>();
         Container.BindFactory<Vector2Int, PlayerStructure, PlayerStructure.Factory>().FromComponentInNewPrefab(_playerStructure).AsSingle();
         Container.BindFactory<Vector2Int, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
-        Container.BindFactory <float, Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy);
+        Container.BindFactory<float, Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy).AsSingle();
+        Container.BindFactory<Vector2Int, Transform, Tower, Tower.Factory>().FromComponentInNewPrefab(_tower).AsSingle();
     }
 }

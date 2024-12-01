@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class Enemy : PathFollowerEntity
+public class Enemy : PathFollowerEntity, IAttackable
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [Tooltip("Color to be used when not pathing towards a player structure")]
@@ -38,6 +38,11 @@ public class Enemy : PathFollowerEntity
         {
             _spriteRenderer.color= _attackingColor;
         }
+    }
+
+    public void Attack()
+    {
+        Kill();
     }
 
     public override void Kill()

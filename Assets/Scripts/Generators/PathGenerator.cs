@@ -201,7 +201,7 @@ public class PathGenerator
             GetNeighbourInDirection(Vector2Int.up),
 
             //Down
-            GetNeighbourInDirection(Vector2Int.down)
+            GetNeighbourInDirection(Vector2Int.down),
         };
 
         //Null tiles could be found at the edge of the map or near un-pathable terrain

@@ -88,16 +88,25 @@ public class Map
 
     public Chunk GetChunkNearPosition(Vector2Int worldPosition)
     {
-        int chunkSize = _chunkGenerator.GetChunkSize();
+        int chunkSize = GetChunkSize();
 
         //Convert world position to grid position
         Vector2Int gridPosition = new Vector2Int(
-            Mathf.FloorToInt(worldPosition.x / chunkSize),
-            Mathf.FloorToInt(worldPosition.y / chunkSize)
+            worldAxisToChunkAxis(worldPosition.x),
+            worldAxisToChunkAxis(worldPosition.y)
             );
 
         //Find chunk with grid position
         return Chunks.Where(chunk => chunk.GridPosition == gridPosition).FirstOrDefault();
+
+        // Convert world axis to chunk axis (eg. x portion of world pos to x portion of chunk pos)
+        int worldAxisToChunkAxis(int worldAxis) => Mathf.FloorToInt((worldAxis + (chunkSize / 2f)) / chunkSize);
+    }
+
+    public TileData GetTileAtPosition(Vector2Int worldPosition)
+    {
+        TileData tile = GetChunkNearPosition(worldPosition)?.GetTileAtPosition(worldPosition);
+        return tile;
     }
 
     /// <summary>

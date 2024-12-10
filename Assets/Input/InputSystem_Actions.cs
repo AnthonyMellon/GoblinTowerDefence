@@ -53,6 +53,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""9caccb81-a010-4864-b6ee-3c7ff4ff6072"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ToggleTowerPlacement"",
+                    ""type"": ""Button"",
+                    ""id"": ""72fc9c8b-120d-4432-bc04-7df2010ba9f8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -132,6 +150,28 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92d33dd3-3a01-4161-a7ad-903921515d43"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6c7e9ed9-a8bf-4a88-a57b-ad9b524c5ecc"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleTowerPlacement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -204,6 +244,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_CameraZoom = m_Player.FindAction("CameraZoom", throwIfNotFound: true);
         m_Player_CameraPan = m_Player.FindAction("CameraPan", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
+        m_Player_ToggleTowerPlacement = m_Player.FindAction("ToggleTowerPlacement", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -273,6 +315,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_CameraZoom;
     private readonly InputAction m_Player_CameraPan;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_MousePosition;
+    private readonly InputAction m_Player_ToggleTowerPlacement;
     public struct PlayerActions
     {
         private @InputSystem_Actions m_Wrapper;
@@ -280,6 +324,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         public InputAction @CameraZoom => m_Wrapper.m_Player_CameraZoom;
         public InputAction @CameraPan => m_Wrapper.m_Player_CameraPan;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
+        public InputAction @ToggleTowerPlacement => m_Wrapper.m_Player_ToggleTowerPlacement;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -298,6 +344,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
+            @ToggleTowerPlacement.started += instance.OnToggleTowerPlacement;
+            @ToggleTowerPlacement.performed += instance.OnToggleTowerPlacement;
+            @ToggleTowerPlacement.canceled += instance.OnToggleTowerPlacement;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -311,6 +363,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
+            @ToggleTowerPlacement.started -= instance.OnToggleTowerPlacement;
+            @ToggleTowerPlacement.performed -= instance.OnToggleTowerPlacement;
+            @ToggleTowerPlacement.canceled -= instance.OnToggleTowerPlacement;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -378,5 +436,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         void OnCameraZoom(InputAction.CallbackContext context);
         void OnCameraPan(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
+        void OnToggleTowerPlacement(InputAction.CallbackContext context);
     }
 }

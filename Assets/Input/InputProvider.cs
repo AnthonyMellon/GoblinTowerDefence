@@ -19,6 +19,8 @@ public class InputProvider
         _inputActions.Player.CameraZoom.performed += CameraZoom;        
         _inputActions.Player.CameraPan.performed += CameraPan;
         _inputActions.Player.Interact.started += Interact;
+        _inputActions.Player.MousePosition.performed += MousePosition;
+        _inputActions.Player.ToggleTowerPlacement.performed += ToggleTowerPlacement;
     }
 
     public Action<float> OnCameraZoom;
@@ -43,5 +45,19 @@ public class InputProvider
         Vector2 value = context.ReadValue<Vector2>();
         Vector2Int worldPoint = Vector2Int.RoundToInt(_playerCamera.ScreenToWorldPoint(value));
         OnInteract?.Invoke(worldPoint);
+    }
+
+    public Action<Vector2Int> OnNewMousePosition;
+    private void MousePosition(InputAction.CallbackContext context)
+    {
+        Vector2 value = context.ReadValue<Vector2>();
+        Vector2Int worldPoint = Vector2Int.RoundToInt(_playerCamera.ScreenToWorldPoint(value));
+        OnNewMousePosition?.Invoke(worldPoint);
+    }
+
+    public Action OnToggleTowerPlacement;
+    private void ToggleTowerPlacement(InputAction.CallbackContext context)
+    {
+        OnToggleTowerPlacement?.Invoke();
     }
 }

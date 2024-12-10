@@ -11,6 +11,7 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private EnemyManager _enemyManager;
     [SerializeField] private SpawnerManager _spawnerManager;
     [SerializeField] private TowerManager _towerManager;
+    [SerializeField] private CursorManager _cursorManager;
 
     [Header("Configs")]
     [SerializeField] private MapConfig _mapConfig;
@@ -38,6 +39,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<EnemyManager>().FromComponentInNewPrefab(_enemyManager).AsSingle();
         Container.Bind<SpawnerManager>().FromComponentInNewPrefab(_spawnerManager).AsSingle();
         Container.Bind<TowerManager>().FromComponentInNewPrefab(_towerManager).AsSingle().NonLazy();
+        Container.Bind<CursorManager>().FromComponentInNewPrefab(_cursorManager).AsSingle();
 
         //Configs
         Container.Bind<MapConfig>().FromScriptableObject(_mapConfig).AsSingle();

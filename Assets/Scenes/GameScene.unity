@@ -168,6 +168,7 @@ MonoBehaviour:
   _enemyManager: {fileID: 6434225845722082121, guid: db52e1b1850271e42adc1499a35b2d4d, type: 3}
   _spawnerManager: {fileID: -1170770340225598535, guid: 22aeb6400eaba344182fd89737ba1382, type: 3}
   _towerManager: {fileID: 3771448427388024096, guid: 28f995a988fa52f4a87b92ba5b730e52, type: 3}
+  _cursorManager: {fileID: 5831226264271902854, guid: 650665724817e034aa9a1e7a2b5b9046, type: 3}
   _mapConfig: {fileID: 11400000, guid: 0f0d421ffa509884e92243d40c49875c, type: 2}
   _chunkConfig: {fileID: 11400000, guid: 8868290ba8e77fc4988da22f370445ed, type: 2}
   _terrainConfig: {fileID: 11400000, guid: d42cdbf3efa7d9245a96e356984fe851, type: 2}

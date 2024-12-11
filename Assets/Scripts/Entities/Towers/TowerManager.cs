@@ -6,7 +6,8 @@ using static MapConstants;
 
 public class TowerManager : MonoBehaviour
 {
-    [SerializeField] private Sprite _placementPreview;    
+    [SerializeField] private Sprite _validPlacementPreview;
+    [SerializeField] private Sprite _invalidPlacementPreview;
 
     private InputProvider _inputProvider;
     private Tower.Factory _towerFactory;
@@ -15,6 +16,8 @@ public class TowerManager : MonoBehaviour
 
     private bool _enablePlacement;
     private List<Tower> _towers;
+
+    private CursorManager.CursorAttachedObject _cursorAttachedObject;
 
     private List<TileType> _allowedTileTypes = new List<TileType> { TileType.Grass };
 
@@ -50,21 +53,29 @@ public class TowerManager : MonoBehaviour
         _enablePlacement = enable;
         if (_enablePlacement)
         {
-            _inputProvider.OnInteract += CreateTower;
-            _cursorManager.SetAttachedSprite(_placementPreview);
+            _cursorAttachedObject = new CursorManager.CursorAttachedObject(_validPlacementPreview, _invalidPlacementPreview, IsValidPlacementSpot, CreateTower);
+            _cursorManager.SetAttachedObject(_cursorAttachedObject);
         }
         else
         {
-            _inputProvider.OnInteract -= CreateTower;
-            _cursorManager.ClearAttachedSprite(); //TODO: This part shouldn't be in charge of this, what if something else has changed the attached sprite before now?
+            _cursorManager.RemoveAttachedObject(_cursorAttachedObject);
         }
+    }
+
+    // Can a tower be placed here?
+    private bool IsValidPlacementSpot(Vector2Int position)
+    {        
+        TileData targetTile = _mapManager._map.GetTileAtPosition(position);
+        if(targetTile != null && targetTile.TileType == TileType.Grass) return true;
+
+        return false;
     }
 
     private void CreateTower(Vector2Int location)
     {
         if (_mapManager?._map == null) return;
 
-        if (_towers == null) _towers = new List<Tower>();        
+        if (_towers == null) _towers = new List<Tower>();
 
         TileData tile = _mapManager._map.GetTileAtPosition(location);
         if (!_allowedTileTypes.Contains(tile.TileType)) return;
@@ -74,6 +85,7 @@ public class TowerManager : MonoBehaviour
         _towers.Add(newTower);
         tile.SetType(TileType.Entity);
 
+        EnableTowerPlacement(false);
     }
 
     public void DestroyAllTowers()

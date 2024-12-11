@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cursorTracker: {fileID: 5254494388364881333}
-  _attachedSprite: {fileID: 5254241707293487627}
+  _attachedSpriteRenderer: {fileID: 5254241707293487627}
 --- !u!1 &6757702595821883902
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +156,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
-  m_Color: {r: 0.91188633, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0.050011873, a: 0.5882353}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

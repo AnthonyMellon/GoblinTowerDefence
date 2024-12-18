@@ -37,9 +37,11 @@ public class EnemyStructure : StructureBase
         if(_path == null) return;
 
         float enemySpeed = UnityEngine.Random.Range(2, 5);
-        Enemy enemy = _enemyFactory.Create(enemySpeed);
+        float enemyMaxHealth = UnityEngine.Random.Range(5, 10);
+        Enemy enemy = _enemyFactory.Create(enemySpeed, enemyMaxHealth);
         enemy.SetPath(_path, _targetStructure);
-        _enemyManager.AddEnemy(enemy);
+        _enemyManager.AddEnemy(enemy);        
+        
     }
 
     public override void Destroy()

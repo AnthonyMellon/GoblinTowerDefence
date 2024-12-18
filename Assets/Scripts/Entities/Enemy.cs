@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
 using Zenject;
+using System.Collections.Generic;
 
-public class Enemy : PathFollowerEntity, IAttackable
+public class Enemy : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [Tooltip("Color to be used when not pathing towards a player structure")]
@@ -10,47 +11,61 @@ public class Enemy : PathFollowerEntity, IAttackable
     [Tooltip("Color to be used when pathing towards a player structure")]
     [SerializeField] private Color _attackingColor;
 
+    [SerializeField] private PathFollowerEntity _pathFollower;
+    [SerializeField] private AttackableEntity _attackable;
+    [SerializeField] private Collider2D _collider;
+
     public Action<Enemy> OnDeath;
 
     [Inject]
-    private void Initialize(float speed)
+    private void Initialize(float speed, float maxHealth)
     {
-        _speed = speed;
+        _pathFollower.SetStats(speed);
+        _attackable.SetStats(maxHealth);
     }
 
     private void OnEnable()
     {
-        OnTargetStructureChange += TargetStructureChanged;
+        _pathFollower.OnTargetStructureChange += UpdateColour;
+        _pathFollower.OnPathEnded += Kill;
+        _attackable.OnDeath += Kill;
     }
 
     private void OnDisable()
     {
-        OnTargetStructureChange -= TargetStructureChanged;
+        _pathFollower.OnTargetStructureChange -= UpdateColour;
+        _pathFollower.OnPathEnded -= Kill;
+        _attackable.OnDeath -= Kill;
     }
 
-    private void TargetStructureChanged(StructureBase newStructure)
+    private void UpdateColour(StructureBase targetStructure)
     {
-        if (newStructure is EnemyStructure)
+        if(targetStructure is EnemyStructure)
         {
             _spriteRenderer.color = _neutralColor;
         }
-        else if (newStructure is PlayerStructure)
+        else if (targetStructure is PlayerStructure)
         {
-            _spriteRenderer.color= _attackingColor;
+            _spriteRenderer.color = _attackingColor;
         }
     }
 
-    public void Attack()
+    public void Kill()
     {
-        Kill();
-    }
-
-    public override void Kill()
-    {
-        base.Kill();
-
         OnDeath?.Invoke(this);
+        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
 
-    public class Factory : PlaceholderFactory<float, Enemy> { };
+    public void SetPath(List<Vector2Int> points, StructureBase targetStructure)
+    {
+        _pathFollower.SetPath(points, targetStructure);
+    }
+
+    public void EnableCollision(bool enable)
+    {
+        _collider.enabled = enable;
+    }
+
+    public class Factory : PlaceholderFactory<float, float, Enemy> { };
 }

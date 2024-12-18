@@ -10,9 +10,15 @@ public class PathFollowerEntity : MonoBehaviour
     private float _progressTowardsTargetPoint;
     private Vector2Int _targetPoint;
     private Vector2Int _currentPoint;
-    protected float _speed = 2;
+    private float _speed = 2;
 
-    protected Action<StructureBase> OnTargetStructureChange; 
+    public Action<StructureBase> OnTargetStructureChange;
+    public Action OnPathEnded;
+
+    public void SetStats(float speed)
+    {
+        _speed = speed;
+    }
 
     private void Update()
     {
@@ -30,7 +36,7 @@ public class PathFollowerEntity : MonoBehaviour
             GetNextPathPoint();
         }
 
-        transform.localPosition = Vector2.Lerp(_currentPoint, _targetPoint, _progressTowardsTargetPoint);
+        UpdatePosition();
     }
 
     private void GetNextPathPoint()
@@ -47,11 +53,17 @@ public class PathFollowerEntity : MonoBehaviour
         _currentPoint = _currentPath.Points[_currentPathPointIndex];
         _targetPoint = _currentPath.Points[_currentPathPointIndex + 1];
         _progressTowardsTargetPoint = 0;
+        UpdatePosition();
+    }
+
+    private void UpdatePosition()
+    {
+        transform.localPosition = Vector2.Lerp(_currentPoint, _targetPoint, _progressTowardsTargetPoint);
     }
 
     public void SetPath(List<Vector2Int> points, StructureBase targetStructure)
     {
-        _currentPath = new Path(points, targetStructure);
+        _currentPath = new Path(points, targetStructure);        
 
         _currentPathPointIndex = -1;
         GetNextPathPoint();
@@ -59,13 +71,7 @@ public class PathFollowerEntity : MonoBehaviour
         OnTargetStructureChange?.Invoke(targetStructure);
     }
 
-    public virtual void Kill()
-    {
-        gameObject.SetActive(false);
-        Destroy(gameObject);
-    }
-
-    protected class Path
+    private class Path
     {
         public List<Vector2Int> Points { get; private set; } = new List<Vector2Int>();
         public StructureBase TargetStructure { get; private set; }        

@@ -14,5 +14,6 @@ public abstract class TowerBlueprint : ScriptableObject
         else return _invalidPlacementPreview;
     }    
 
-    public abstract void Attack(IAttackable target);
+    protected abstract void Attack(AttackableEntity target);
+    public abstract void TryAttack(AttackableEntity target);
 }

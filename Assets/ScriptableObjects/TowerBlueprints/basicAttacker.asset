@@ -15,3 +15,5 @@ MonoBehaviour:
   _validPlacementPreview: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   _invalidPlacementPreview: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   AllowedPlacements: 00000000
+  _power: 1
+  _attackCooldown: 0.1

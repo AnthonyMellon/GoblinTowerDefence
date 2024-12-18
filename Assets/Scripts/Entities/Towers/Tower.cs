@@ -6,7 +6,7 @@ using System.Linq;
 public class Tower : MonoBehaviour
 {
     public Vector2Int location;
-    private List<IAttackable> _targets;
+    private List<AttackableEntity> _targets;
 
     private TowerBlueprint _towerBlueprint;
 
@@ -20,18 +20,18 @@ public class Tower : MonoBehaviour
 
     private void Update()
     {
-        IAttackable target = _targets?.FirstOrDefault();
-        _towerBlueprint.Attack(target);
+        AttackableEntity target = _targets?.FirstOrDefault();
+        _towerBlueprint.TryAttack(target);
     }
 
-    public void AddTarget(IAttackable target)
+    public void AddTarget(AttackableEntity target)
     {
-        if(_targets == null) _targets = new List<IAttackable>();
+        if(_targets == null) _targets = new List<AttackableEntity>();
 
         _targets.Add(target);
     }
 
-    public void RemoveTarget(IAttackable target)
+    public void RemoveTarget(AttackableEntity target)
     {
         if (_targets == null) return;
 

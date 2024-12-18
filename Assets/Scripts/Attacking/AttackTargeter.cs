@@ -8,7 +8,7 @@ public class AttackTargeter : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out IAttackable target))
+        if (collision.TryGetComponent(out AttackableEntity target))
         {
             _attacker.AddTarget(target);
         }
@@ -16,7 +16,7 @@ public class AttackTargeter : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.TryGetComponent(out IAttackable target))
+        if (collision.TryGetComponent(out AttackableEntity target))
         {
             _attacker.RemoveTarget(target);
         }

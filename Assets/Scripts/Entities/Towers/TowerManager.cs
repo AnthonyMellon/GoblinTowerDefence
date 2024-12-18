@@ -6,8 +6,7 @@ using static MapConstants;
 
 public class TowerManager : MonoBehaviour
 {
-    [SerializeField] private Sprite _validPlacementPreview;
-    [SerializeField] private Sprite _invalidPlacementPreview;
+    [SerializeField] private TowerBlueprint _currentTowerBlueprint;
 
     private InputProvider _inputProvider;
     private Tower.Factory _towerFactory;
@@ -53,7 +52,11 @@ public class TowerManager : MonoBehaviour
         _enablePlacement = enable;
         if (_enablePlacement)
         {
-            _cursorAttachedObject = new CursorManager.CursorAttachedObject(_validPlacementPreview, _invalidPlacementPreview, IsValidPlacementSpot, CreateTower);
+            _cursorAttachedObject = new CursorManager.CursorAttachedObject(
+                _currentTowerBlueprint.GetPlacementPreview(true),
+                _currentTowerBlueprint.GetPlacementPreview(false),
+                IsValidPlacementSpot,
+                CreateTower);
             _cursorManager.SetAttachedObject(_cursorAttachedObject);
         }
         else
@@ -62,11 +65,18 @@ public class TowerManager : MonoBehaviour
         }
     }
 
-    // Can a tower be placed here?
+    // Can the tower be placed here?
     private bool IsValidPlacementSpot(Vector2Int position)
-    {        
+    {
         TileData targetTile = _mapManager._map.GetTileAtPosition(position);
-        if(targetTile != null && targetTile.TileType == TileType.Grass) return true;
+        if(
+            targetTile != null
+            && _currentTowerBlueprint.AllowedPlacements != null
+            && _currentTowerBlueprint.AllowedPlacements.Contains(targetTile.TileType)
+        )
+        {            
+            return true;
+        }
 
         return false;
     }
@@ -81,7 +91,7 @@ public class TowerManager : MonoBehaviour
         if (!_allowedTileTypes.Contains(tile.TileType)) return;
 
         //Place tower
-        Tower newTower = _towerFactory.Create(location, transform);
+        Tower newTower = _towerFactory.Create(location, transform, _currentTowerBlueprint);
         _towers.Add(newTower);
         tile.SetType(TileType.Entity);
 

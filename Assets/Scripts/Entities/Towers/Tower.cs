@@ -8,22 +8,20 @@ public class Tower : MonoBehaviour
     public Vector2Int location;
     private List<IAttackable> _targets;
 
+    private TowerBlueprint _towerBlueprint;
+
     [Inject]
-    private void Initialize(Vector2Int worldPosition, Transform parent)
+    private void Initialize(Vector2Int worldPosition, Transform parent, TowerBlueprint towerBlueprint)
     {
         transform.parent = parent;
         transform.localPosition = new Vector3(worldPosition.x, worldPosition.y, 0);
-    }
-
-    public void Attack(IAttackable target)
-    {
-        target?.Attack();
+        _towerBlueprint = towerBlueprint;
     }
 
     private void Update()
     {
         IAttackable target = _targets?.FirstOrDefault();
-        Attack(target);
+        _towerBlueprint.Attack(target);
     }
 
     public void AddTarget(IAttackable target)
@@ -40,5 +38,5 @@ public class Tower : MonoBehaviour
         _targets.Remove(target);
     }
 
-    public class Factory : PlaceholderFactory<Vector2Int, Transform, Tower> { }
+    public class Factory : PlaceholderFactory<Vector2Int, Transform, TowerBlueprint, Tower> { }
 }

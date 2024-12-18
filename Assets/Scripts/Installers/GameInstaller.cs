@@ -60,6 +60,6 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Vector2Int, PlayerStructure, PlayerStructure.Factory>().FromComponentInNewPrefab(_playerStructure).AsSingle();
         Container.BindFactory<Vector2Int, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
         Container.BindFactory<float, Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy).AsSingle();
-        Container.BindFactory<Vector2Int, Transform, Tower, Tower.Factory>().FromComponentInNewPrefab(_tower).AsSingle();
+        Container.BindFactory<Vector2Int, Transform, TowerBlueprint, Tower, Tower.Factory>().FromComponentInNewPrefab(_tower).AsSingle();
     }
 }

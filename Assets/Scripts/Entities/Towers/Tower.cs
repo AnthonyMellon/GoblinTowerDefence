@@ -20,8 +20,28 @@ public class Tower : MonoBehaviour
 
     private void Update()
     {
+        TryAttack();
+    }
+
+    private void TryAttack()
+    {
         AttackableEntity target = _targets?.FirstOrDefault();
+        LookAtTarget(target?.transform);
         _towerBlueprint.TryAttack(target);
+    }
+
+    private void LookAtTarget(Transform target)
+    {
+        if(target == null) return;
+
+        Vector2 distance = new Vector2(
+            target.position.x - transform.position.x,
+            target.position.y - transform.position.y
+            );
+
+        float rotation = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg - 90; // apparently I need to remove 90 degres here
+        Vector3 currRotation = transform.rotation.eulerAngles;
+        transform.rotation = Quaternion.Euler(currRotation.x, currRotation.y, rotation);
     }
 
     public void AddTarget(AttackableEntity target)

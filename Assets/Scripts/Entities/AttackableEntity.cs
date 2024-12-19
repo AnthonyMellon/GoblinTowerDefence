@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class AttackableEntity : MonoBehaviour
 {
@@ -7,6 +8,10 @@ public class AttackableEntity : MonoBehaviour
     private float _currentHealth;
 
     public Action OnDeath;
+    /// <summary>
+    /// currHealth, maxHealth
+    /// </summary>
+    public Action<float, float> OnHealthChange;
 
     public void SetStats(float maxHealth)
     {
@@ -17,7 +22,7 @@ public class AttackableEntity : MonoBehaviour
     public void Damage(float damage)
     {
         _currentHealth -= damage;
-        Debug.Log($"New health is <color=red>{_currentHealth}</color>/<color=green>{_maxHealth}</color>");
+        OnHealthChange?.Invoke(_currentHealth, _maxHealth);
         if (_currentHealth <= 0) OnDeath?.Invoke();
     }
 }

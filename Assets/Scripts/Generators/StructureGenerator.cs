@@ -9,7 +9,6 @@ public class StructureGenerator
     private PlayerStructure.Factory _playerStructureFacotry;
     private EnemyStructure.Factory _enemyStructureFacotry;
     private Transform _structureContainer;
-    private Transform _enemyContainer;
     private SpawnerManager _spawnerManager;
 
     [Inject]
@@ -20,10 +19,9 @@ public class StructureGenerator
         _spawnerManager = spawnerManager;
     }
 
-    public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks, Transform structureContainer, Transform enemyContainer)
+    public (List<Chunk> chunks, Vector2Int playerPosition) GenerateStructures(List<Chunk> chunks, Transform structureContainer)
     {
         _structureContainer = structureContainer;
-        _enemyContainer = enemyContainer;
 
         List<Chunk> playerChunks = chunks.Where(chunk => chunk.Owner == ChunkOwner.Player).ToList();
         List<Chunk> enemyChunks = chunks.Where(chunk => chunk.Owner == ChunkOwner.Enemy).ToList();

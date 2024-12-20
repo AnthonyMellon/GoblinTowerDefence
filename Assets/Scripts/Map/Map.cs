@@ -55,11 +55,11 @@ public class Map
         return this;
     }
 
-    public Map GenerateStructures(Transform structureContainer, Transform enemyContianer)
+    public Map GenerateStructures(Transform structureContainer)
     {
         if(!_config.ShouldGenerateStructures()) return this;
 
-        (List<Chunk> chunks, Vector2Int playerPosition) = _structureGenerator.GenerateStructures(Chunks, structureContainer, enemyContianer);
+        (List<Chunk> chunks, Vector2Int playerPosition) = _structureGenerator.GenerateStructures(Chunks, structureContainer);
         Chunks = chunks;
         _playerPosition = playerPosition;
         return this;

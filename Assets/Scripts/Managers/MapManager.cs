@@ -11,7 +11,6 @@ public class MapManager : MonoBehaviour
 {
     [SerializeField] private Tilemap _tileMap;
     [SerializeField] private Transform _structureContainer;
-    [SerializeField] private Transform _enemyContainer;
 
     private Map.Factory _mapFactory;
     public Map _map { get; private set; }
@@ -40,7 +39,7 @@ public class MapManager : MonoBehaviour
             .Create()
             .GenerateChunks()
             .GenerateTerrain()
-            .GenerateStructures(_structureContainer, _enemyContainer)
+            .GenerateStructures(_structureContainer)
             .GeneratePaths();
 
         _map = map;

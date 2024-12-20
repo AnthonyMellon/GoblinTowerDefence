@@ -1,19 +1,34 @@
+using System;
 using UnityEngine;
 
 public class Bank : MonoBehaviour
 {
     [SerializeField] private int _startCurrency;
-    public int _storedCurrency { get; private set; }
-    public bool CanAfford(int amount) => amount <= _storedCurrency;
+
+    private int b_storedCurrency;
+    public int StoredCurrency { 
+        get 
+        { 
+            return b_storedCurrency;
+        }
+        private set
+        {
+            b_storedCurrency = value;
+            OnCurrencyChage?.Invoke(b_storedCurrency);
+        }
+    }
+    public bool CanAfford(int amount) => amount <= StoredCurrency;
+
+    public Action<int> OnCurrencyChage;
 
     private void Start()
     {
-        _storedCurrency = _startCurrency;
+        StoredCurrency = _startCurrency;
     }
 
     public void AddCurrency(int amount)
     {
-        _storedCurrency += amount;
+        StoredCurrency += amount;
     }
 
     /// <summary>
@@ -25,7 +40,7 @@ public class Bank : MonoBehaviour
     {
         if(CanAfford(amount))
         {
-            _storedCurrency -= amount;
+            StoredCurrency -= amount;
             return true;
         }
         else

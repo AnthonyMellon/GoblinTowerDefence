@@ -30,6 +30,9 @@ public class GameInstaller : MonoInstaller
     [SerializeField] private Enemy _enemy;
     [SerializeField] private Tower _tower;
 
+    [Header("UI")]
+    [SerializeField] private GameUI _gameUI;
+
     public override void InstallBindings()
     {
         Container.Bind<InputProvider>().FromNew().AsSingle();
@@ -63,5 +66,8 @@ public class GameInstaller : MonoInstaller
         Container.BindFactory<Vector2Int, EnemyStructure, EnemyStructure.Factory>().FromComponentInNewPrefab(_enemyStructure).AsSingle();
         Container.BindFactory<float, float, Enemy, Enemy.Factory>().FromComponentInNewPrefab(_enemy).AsSingle();
         Container.BindFactory<Vector2Int, Transform, TowerBlueprint, Tower, Tower.Factory>().FromComponentInNewPrefab(_tower).AsSingle();
+
+        //UI
+        Container.Bind<GameUI>().FromComponentInNewPrefab(_gameUI).AsSingle().NonLazy();
     }
 }

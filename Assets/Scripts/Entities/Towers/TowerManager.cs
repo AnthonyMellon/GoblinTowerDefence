@@ -12,6 +12,7 @@ public class TowerManager : MonoBehaviour
     private Tower.Factory _towerFactory;
     private MapManager _mapManager;
     private CursorManager _cursorManager;
+    private PlayerManager _playerManager;
 
     private bool _enablePlacement;
     private List<Tower> _towers;
@@ -21,12 +22,19 @@ public class TowerManager : MonoBehaviour
     private List<TileType> _allowedTileTypes = new List<TileType> { TileType.Grass };
 
     [Inject]
-    private void Initialize(InputProvider inputProvider, Tower.Factory towerFactory, MapManager mapManager, CursorManager cursorManager)
+    private void Initialize(
+        InputProvider inputProvider,
+        Tower.Factory towerFactory,
+        MapManager mapManager,
+        CursorManager cursorManager,
+        PlayerManager playerManager
+        )
     {
         _inputProvider = inputProvider;
         _towerFactory = towerFactory;
         _mapManager = mapManager;
         _cursorManager = cursorManager;
+        _playerManager = playerManager;
     }
 
     private void OnEnable()
@@ -55,7 +63,7 @@ public class TowerManager : MonoBehaviour
             _cursorAttachedObject = new CursorManager.CursorAttachedObject(
                 _currentTowerBlueprint.GetPlacementPreview(true),
                 _currentTowerBlueprint.GetPlacementPreview(false),
-                IsValidPlacementSpot,
+                CanPlaceTower,
                 CreateTower);
             _cursorManager.SetAttachedObject(_cursorAttachedObject);
         }
@@ -81,6 +89,13 @@ public class TowerManager : MonoBehaviour
         return false;
     }
 
+    private bool CanPlaceTower(Vector2Int position)
+    {
+        if (_playerManager.Bank.CanAfford(_currentTowerBlueprint.Cost) == false) return false;
+        if (IsValidPlacementSpot(position) == false) return false;
+
+        return true;
+    }
     private void CreateTower(Vector2Int location)
     {
         if (_mapManager?._map == null) return;
@@ -89,6 +104,9 @@ public class TowerManager : MonoBehaviour
 
         TileData tile = _mapManager._map.GetTileAtPosition(location);
         if (!_allowedTileTypes.Contains(tile.TileType)) return;
+
+        // Try buy the tower
+        if (_playerManager.Bank.TryRemoveCurrency(_currentTowerBlueprint.Cost) == false) return;
 
         //Place tower
         Tower newTower = _towerFactory.Create(location, transform, _currentTowerBlueprint);

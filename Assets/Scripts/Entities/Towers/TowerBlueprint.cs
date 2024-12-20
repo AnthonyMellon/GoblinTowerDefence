@@ -7,6 +7,8 @@ public abstract class TowerBlueprint : ScriptableObject
     [SerializeField] private Sprite _validPlacementPreview;
     [SerializeField] private Sprite _invalidPlacementPreview;
     [SerializeField] public List<TileType> AllowedPlacements;
+    [SerializeField] private int _cost;
+    public int Cost { get { return _cost; } private set { _cost = value; } }
 
     public Sprite GetPlacementPreview(bool valid)
     {
